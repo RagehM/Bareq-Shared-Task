@@ -12,6 +12,7 @@ load_dotenv()
 NEO4J_URI = os.getenv("NEO4J_URI")
 NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
+
 neo4j_driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD))
 
 def execute_query(query, parameters=None):
@@ -19,9 +20,11 @@ def execute_query(query, parameters=None):
         result = session.run(query, parameters or {})
         return [record for record in result]
 
+# Test connection to Neo4j
 try:
-    test_query = "MATCH (n) RETURN n"
+    test_query = "CALL db.info()"
     execute_query(test_query)
+    print("Connected to Neo4j successfully.")
 except Exception as e:
     print(f"Error connecting to Neo4j: {e}")
 

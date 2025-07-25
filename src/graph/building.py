@@ -6,7 +6,7 @@ import re
 
 #gnerate lemmas from SAMER dataset
 def generate_lemmas_from_samer(samer_cleaned):
-    for i in range(samer_cleaned):
+    for i in range(len(samer_cleaned)):
         lemma = samer_cleaned.iloc[i]["lemma"]
         pos = samer_cleaned.iloc[i]["pos"]
         avg_readability = samer_cleaned.iloc[i]["readability (rounded average)"]
@@ -25,7 +25,7 @@ def generate_sentence_from_data_set(data_set_cleaned, samer_cleaned):
     lemma_set = set(samer_cleaned[ 'lemma'].astype(str))
     pairs_list = []
 
-    for i in range(data_set_cleaned):
+    for i in range(len(data_set_cleaned)):
         sentence = data_set_cleaned.iloc[i]["Sentence"]
         domain_type = data_set_cleaned.iloc[i]["Domain"]
         class_type = data_set_cleaned.iloc[i]["Text_Class"]
