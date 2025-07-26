@@ -5,8 +5,17 @@ from neo4j import GraphDatabase
 from camel_tools.morphology.database import MorphologyDB
 from camel_tools.morphology.analyzer import Analyzer
 import os
+import logging
 
 load_dotenv()
+
+#loggin configuration
+logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        filename='app.log'
+)
 
 # Database configuration
 NEO4J_URI = os.getenv("NEO4J_URI")
