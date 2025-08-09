@@ -1,6 +1,7 @@
 #retrieving.py
 
 from config import execute_query
+from config import logging
 import json
 
 # Retrieving sentences from the database and saving them to a JSON file
@@ -19,15 +20,13 @@ def retrieve_sentences():
     with open("data/json/sentences.json", "w", encoding="utf-8") as f:
         json.dump(sentence_nodes, f, ensure_ascii=False, indent=2)
 
-    print("Sentences retrieved and saved to data/json/sentences.json")
+    logging.info("Sentences retrieved and saved to data/json/sentences.json")
 
 
 # Retrieving lemmas from the database and saving them to a JSON file
 def retrieve_lemmas():
     lemmas_query = """MATCH (l:Lemma) RETURN l AS Lemma"""
     lemma_records = execute_query(lemmas_query)
-
-    print(lemma_records)
 
     lemma_nodes = []
     for record in lemma_records:
@@ -43,7 +42,7 @@ def retrieve_lemmas():
     with open("data/json/lemmas.json", "w", encoding="utf-8") as f:
         json.dump(lemma_nodes, f, ensure_ascii=False, indent=2)
 
-    print("Lemmas retrieved and saved to data/json/lemmas.json")
+    logging.info("Lemmas retrieved and saved to data/json/lemmas.json")
 
 
 def retrieve_sentence_lemma():
@@ -65,7 +64,7 @@ def retrieve_sentence_lemma():
     with open("data/json/sentence_lemma.json", "w", encoding="utf-8") as f:
         json.dump(sentence_lemma_nodes, f, ensure_ascii=False, indent=2)
 
-    print("Sentence-Lemma relationships retrieved and saved to data/json/sentence_lemma.json")
+    logging.info("Sentence-Lemma relationships retrieved and saved to data/json/sentence_lemma.json")
 
 
 def retrieve_lemma_lemma():
@@ -90,7 +89,7 @@ def retrieve_lemma_lemma():
     with open("data/json/lemma_lemma.json", "w", encoding="utf-8") as f:
         json.dump(lemma_lemma_nodes, f, ensure_ascii=False, indent=2)
 
-    print("Lemma-Lemma relationships retrieved and saved to data/json/lemma_lemma.json")
+    logging.info("Lemma-Lemma relationships retrieved and saved to data/json/lemma_lemma.json")
 
 def retrieve_sentence_class():
     sentence_class_query = """MATCH (s:Sentence)-[r:IN_CLASS]->(c:Class) RETURN s AS sentence, r AS relation, c AS class"""
@@ -111,7 +110,7 @@ def retrieve_sentence_class():
     with open("sentence_class.json", "w", encoding="utf-8") as f:
         json.dump(sentence_class_nodes, f, ensure_ascii=False, indent=2)
 
-    print("Sentence-Class relationships retrieved and saved to data/json/sentence_class.json")
+    logging.info("Sentence-Class relationships retrieved and saved to data/json/sentence_class.json")
 
 
 def retrieve_sentence_domain():
@@ -133,5 +132,5 @@ def retrieve_sentence_domain():
     with open("sentence_domain.json", "w", encoding="utf-8") as f:
         json.dump(sentence_domain_nodes, f, ensure_ascii=False, indent=2)
 
-    print("Sentence-Domain relationships retrieved and saved to data/json/sentence_domain.json")
+    logging.info("Sentence-Domain relationships retrieved and saved to data/json/sentence_domain.json")
 

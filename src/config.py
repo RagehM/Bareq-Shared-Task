@@ -33,9 +33,9 @@ def execute_query(query, parameters=None):
 try:
     test_query = "CALL db.info()"
     execute_query(test_query)
-    print("Connected to Neo4j successfully.")
+    logging.info("Connected to Neo4j successfully.")
 except Exception as e:
-    print(f"Error connecting to Neo4j: {e}")
+    logging.error(f"Error connecting to Neo4j: {e}")
 
 # Morphology Analyzer configuration
 db = MorphologyDB.builtin_db()

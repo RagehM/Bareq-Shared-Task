@@ -1,6 +1,7 @@
 #data_cleaning.py
 
 from utils.arabic import remove_diacritics
+from config import logging
 
 def clean_data_set(data_set):
     # Remove Unwanted Columns
@@ -10,9 +11,9 @@ def clean_data_set(data_set):
     data_set_cleaned = data_set_cleaned.drop_duplicates(subset='Sentence', keep='first')
 
     # Save the cleaned dataset to a CSV file
-    data_set_cleaned.to_csv("../data/cleaned/cleaned_data_set.csv", index=False)
+    data_set_cleaned.to_csv("data/cleaned/cleaned_data_set.csv", index=False)
 
-    print("Data set cleaned and saved successfully.")
+    logging.info("Data set cleaned and saved successfully.")
 
     return data_set_cleaned
 
@@ -33,9 +34,9 @@ def clean_samer(SAMER_df):
     samer_cleaned = samer_cleaned.drop_duplicates(subset='lemma', keep='first')
 
     # Save the cleaned DataFrame to a CSV file
-    samer_cleaned.to_csv("../data/cleaned/cleaned_SAMER_df.csv", index=False)
+    samer_cleaned.to_csv("data/cleaned/cleaned_SAMER_df.csv", index=False)
 
-    print("SAMER dataset cleaned and saved successfully.")
+    logging.info("SAMER dataset cleaned and saved successfully.")
 
     return samer_cleaned
 
