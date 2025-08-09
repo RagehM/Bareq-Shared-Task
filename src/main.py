@@ -1,11 +1,11 @@
 #main.py
 
-from  src.data_processing.load_csv import load_csv
-from src.data_processing.data_cleaning import clean_data_set
-from src.data_processing.data_cleaning import clean_samer
-from src.graph.building import *
-from src.config import *
-from src.graph.retrieving import *
+from data_processing.load_csv import load_csv
+from data_processing.data_cleaning import clean_data_set
+from data_processing.data_cleaning import clean_samer
+from graph.building import *
+from config import *
+from graph.retrieving import *
 import pandas as pd
 
 def main():

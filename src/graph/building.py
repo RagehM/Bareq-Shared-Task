@@ -1,6 +1,6 @@
 #building.py
 
-from src.config import *
+from config import *
 from itertools import combinations
 import re
 

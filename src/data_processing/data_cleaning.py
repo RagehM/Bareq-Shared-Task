@@ -1,6 +1,6 @@
 #data_cleaning.py
 
-from src.utils.arabic import remove_diacritics
+from utils.arabic import remove_diacritics
 
 def clean_data_set(data_set):
     # Remove Unwanted Columns

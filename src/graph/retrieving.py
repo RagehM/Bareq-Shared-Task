@@ -1,6 +1,6 @@
 #retrieving.py
 
-from src.config import execute_query
+from config import execute_query
 import json
 
 # Retrieving sentences from the database and saving them to a JSON file
