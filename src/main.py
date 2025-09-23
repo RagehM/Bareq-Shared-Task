@@ -4,14 +4,12 @@ from data_processing.load_csv import load_csv
 from data_processing.data_cleaning import clean_data_set
 from data_processing.data_cleaning import clean_samer
 from graph.building import *
-from config import *
 from graph.retrieving import *
-import pandas as pd
 
 def main():
-    SAMER_df, df_dev, data_set, test_sent, test_doc = load_csv()
+    samer_df, df_dev, data_set, test_sent, test_doc = load_csv()
 
-    samer_cleaned = clean_samer(SAMER_df)
+    samer_cleaned = clean_samer(samer_df)
 
     data_set_cleaned = clean_data_set(data_set)
 

@@ -1,64 +1,87 @@
 #building.py
 
-from config import *
+from src.config import *
 from itertools import combinations
 import re
 
 #gnerate lemmas from SAMER dataset
-def generate_lemmas_from_samer(samer_cleaned):
-    for i in range(len(samer_cleaned)):
-        lemma = samer_cleaned.iloc[i]["lemma"]
-        pos = samer_cleaned.iloc[i]["pos"]
-        avg_readability = samer_cleaned.iloc[i]["readability (rounded average)"]
-        freq = samer_cleaned.iloc[i]["Occurrences"]
+def generate_lemmas_from_samer(samer_cleaned, batch_size=1000):
+    for i in range(0, len(samer_cleaned), batch_size):
+        batch_end = min(i + batch_size, len(samer_cleaned))
+        lemma_data = []
 
-        lemma_query = """MERGE (l:Lemma {lemma: $lemma}) ON CREATE SET l.pos = $pos, l.avg_readability = $avg_readability, l.freq = $freq"""
+        for j in range(i, batch_end):
+            lemma_data.append({
+                "lemma": samer_cleaned.iloc[j]["lemma"],
+                "pos": samer_cleaned.iloc[j]["pos"],
+                "avg_readability": samer_cleaned.iloc[j]["readability (rounded average)"],
+                "freq": samer_cleaned.iloc[j]["Occurrences"]
+            })
 
-        lemma_params = {"lemma": lemma, "pos": pos, "avg_readability": avg_readability, "freq": freq}
-
-        execute_query(lemma_query, lemma_params)
+        lemma_query = """
+        UNWIND $lemmas AS lemma_data
+        MERGE (l:Lemma {lemma: lemma_data.lemma}) 
+        ON CREATE SET 
+            l.pos = lemma_data.pos, 
+            l.avg_readability = lemma_data.avg_readability, 
+            l.freq = lemma_data.freq
+        """
+        execute_query(lemma_query, {"lemmas": lemma_data})
     logging.info("Finished generating lemmas from SAMER")
 
 
 # Generating Sentences from the dataset
-def generate_sentence_from_data_set(data_set_cleaned, samer_cleaned):
+def generate_sentence_from_data_set(data_set_cleaned, samer_cleaned, batch_size=500):
     lemma_set = set(samer_cleaned['lemma'].astype(str))
     pairs_list = []
 
-    for i in range(len(data_set_cleaned)):
-        sentence = data_set_cleaned.iloc[i]["Sentence"]
-        domain_type = data_set_cleaned.iloc[i]["Domain"]
-        class_type = data_set_cleaned.iloc[i]["Text_Class"]
+    for i in range(0, len(data_set_cleaned), batch_size):
+        batch_end = min(i + batch_size, len(data_set_cleaned))
+        sentence_data = []
 
-        words = re.findall(r'\b[\w]+\b', sentence)
-        sentence_to_lemma = []
-        for word in words:
-            if word in lemma_set:
-                sentence_to_lemma.append(word)
+        for j in range(i, batch_end):
+            sentence = data_set_cleaned.iloc[j]["Sentence"]
+            domain_type = data_set_cleaned.iloc[j]["Domain"]
+            class_type = data_set_cleaned.iloc[j]["Text_Class"]
 
-        pairs = [list(pair) for pair in combinations(set(sentence_to_lemma), 2)]
-        pairs_list.extend(pairs)
+            words = re.findall(r'\b[\w]+\b', sentence)
+            sentence_to_lemma = []
+            for word in words:
+                if word in lemma_set:
+                    sentence_to_lemma.append(word)
+
+            pairs = [list(pair) for pair in combinations(set(sentence_to_lemma), 2)]
+            pairs_list.extend(pairs)
+
+            sentence_data.append({
+                "id": j + 1,
+                "text": sentence,
+                "domainType": domain_type,
+                "classType": class_type,
+                "lemmas": sentence_to_lemma
+            })
 
         sentence_query = """
-        MERGE (S:Sentence {id: $id})
-        ON CREATE SET S.text = $text
+        UNWIND $sentences AS sentence_data
 
-        WITH S
-        MERGE (D:Domain {type: $domainType})
-        MERGE (C:Class {type: $classType})
+        MERGE (S:Sentence {id: sentence_data.id})
+        ON CREATE SET S.text = sentence_data.text
+
+        MERGE (D:Domain {type: sentence_data.domainType})
+        MERGE (C:Class {type: sentence_data.classType})
+
         MERGE (S)-[:IN_DOMAIN]->(D)
         MERGE (S)-[:IN_CLASS]->(C)
 
-        WITH S
-        UNWIND $lemmas AS lemma
+        WITH S, sentence_data
+        UNWIND sentence_data.lemmas AS lemma
         MATCH (L:Lemma {lemma: lemma})
         MERGE (S)-[r:HAS_LEMMA]->(L)
         ON CREATE SET r.count = 1
-        ON MATCH SET r.count = r.count + 1"""
+        ON MATCH SET r.count = r.count + 1
+        """
 
-        sentence_params = {"id": i + 1, "text": sentence, "domainType": domain_type, "classType": class_type, "lemmas": sentence_to_lemma}
-
-        execute_query(sentence_query, sentence_params)
+        execute_query(sentence_query, {"sentences": sentence_data})
 
     lemmas_pairs_query = """
                 UNWIND $pairs AS pair

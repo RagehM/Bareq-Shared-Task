@@ -1,8 +1,12 @@
 #retrieving.py
 
-from config import execute_query
-from config import logging
+from src.config import execute_query
+from src.config import logging
+from pathlib import Path
 import json
+
+current_file = Path(__file__).resolve()
+project_root = current_file.parent.parent.parent
 
 # Retrieving sentences from the database and saving them to a JSON file
 def retrieve_sentences():
@@ -17,7 +21,7 @@ def retrieve_sentences():
         }
         sentence_nodes.append(sentence)
 
-    with open("data/json/sentences.json", "w", encoding="utf-8") as f:
+    with open(project_root / "data/json/sentences.json", "w", encoding="utf-8") as f:
         json.dump(sentence_nodes, f, ensure_ascii=False, indent=2)
 
     logging.info("Sentences retrieved and saved to data/json/sentences.json")
@@ -39,7 +43,7 @@ def retrieve_lemmas():
         }
         lemma_nodes.append(lemma)
 
-    with open("data/json/lemmas.json", "w", encoding="utf-8") as f:
+    with open(project_root / "data/json/lemmas.json", "w", encoding="utf-8") as f:
         json.dump(lemma_nodes, f, ensure_ascii=False, indent=2)
 
     logging.info("Lemmas retrieved and saved to data/json/lemmas.json")
@@ -61,7 +65,7 @@ def retrieve_sentence_lemma():
         }
         sentence_lemma_nodes.append(sentence_lemma)
 
-    with open("data/json/sentence_lemma.json", "w", encoding="utf-8") as f:
+    with open(project_root / "data/json/sentence_lemma.json", "w", encoding="utf-8") as f:
         json.dump(sentence_lemma_nodes, f, ensure_ascii=False, indent=2)
 
     logging.info("Sentence-Lemma relationships retrieved and saved to data/json/sentence_lemma.json")
@@ -86,7 +90,7 @@ def retrieve_lemma_lemma():
         }
         lemma_lemma_nodes.append(lemma_lemma)
 
-    with open("data/json/lemma_lemma.json", "w", encoding="utf-8") as f:
+    with open(project_root / "data/json/lemma_lemma.json", "w", encoding="utf-8") as f:
         json.dump(lemma_lemma_nodes, f, ensure_ascii=False, indent=2)
 
     logging.info("Lemma-Lemma relationships retrieved and saved to data/json/lemma_lemma.json")
@@ -107,7 +111,7 @@ def retrieve_sentence_class():
         }
         sentence_class_nodes.append(sentence_class)
 
-    with open("sentence_class.json", "w", encoding="utf-8") as f:
+    with open(project_root / "sentence_class.json", "w", encoding="utf-8") as f:
         json.dump(sentence_class_nodes, f, ensure_ascii=False, indent=2)
 
     logging.info("Sentence-Class relationships retrieved and saved to data/json/sentence_class.json")
@@ -129,7 +133,7 @@ def retrieve_sentence_domain():
         }
         sentence_domain_nodes.append(sentence_domain)
 
-    with open("sentence_domain.json", "w", encoding="utf-8") as f:
+    with open(project_root / "sentence_domain.json", "w", encoding="utf-8") as f:
         json.dump(sentence_domain_nodes, f, ensure_ascii=False, indent=2)
 
     logging.info("Sentence-Domain relationships retrieved and saved to data/json/sentence_domain.json")
